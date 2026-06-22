@@ -1,44 +1,61 @@
 .grid {
   display: grid;
-  // gridTemplateColumns set inline via style prop
+  // gridTemplateColumns and gridTemplateRows set inline
   border: 1px solid var(--ifm-color-emphasis-300);
   border-radius: 8px;
   overflow: hidden;
   margin: 1.5rem 0;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: none !important;
+  }
+}
+
+.column {
+  display: grid;
+  grid-row: 1 / -1;
+  grid-template-rows: subgrid;
+  min-width: 0;
+
+  & ~ & {
+    border-left: 1px solid var(--ifm-color-emphasis-300);
+
+    @media (max-width: 768px) {
+      border-left: none;
+      border-top: 1px solid var(--ifm-color-emphasis-300);
+    }
+  }
+
+  @media (max-width: 768px) {
+    grid-row: auto;
+    grid-template-rows: none;
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 .title,
 .body,
 .code,
 .result {
-  padding: 1rem 1.25rem;
-  min-width: 0; // prevent grid blowout from wide code blocks
-}
-
-// Column dividers — every non-first sibling of the same row type
-.title ~ .title,
-.body ~ .body,
-.code ~ .code,
-.result ~ .result {
-  border-left: 1px solid var(--ifm-color-emphasis-300);
-}
-
-// Row dividers — use border-top on every row after the first
-.body,
-.code,
-.result {
-  border-top: 1px solid var(--ifm-color-emphasis-300);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .title {
+  padding: 0.75rem 1.25rem;
   font-weight: 600;
   font-size: 0.95rem;
   background: var(--ifm-color-emphasis-100);
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
 }
 
 .body {
+  padding: 1rem 1.25rem;
   font-size: 0.9rem;
   color: var(--ifm-color-emphasis-800);
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
 
   p:last-child {
     margin-bottom: 0;
@@ -46,6 +63,8 @@
 }
 
 .code {
+  padding: 1rem 1.25rem;
+
   > div {
     margin-bottom: 0 !important;
   }
@@ -54,6 +73,9 @@
 .result {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--ifm-color-emphasis-300);
 }
 
 .resultLabel {
@@ -68,7 +90,6 @@
 
 .resultBody {
   position: relative;
-  flex: 1;
   max-height: 8rem;
   overflow: hidden;
   transition: max-height 0.3s ease;
@@ -97,7 +118,6 @@
   width: 100%;
   margin-top: auto;
   padding-top: 0.5rem;
-  padding: 0.3rem 0;
   background: none;
   border: none;
   border-top: 1px solid var(--ifm-color-emphasis-200);

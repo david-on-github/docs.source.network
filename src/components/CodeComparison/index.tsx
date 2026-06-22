@@ -12,65 +12,59 @@ interface ComparisonProps {
 }
 
 export function Comparison(_props: ComparisonProps) {
-  // Intentionally empty — CodeComparison reads props directly from children
   return null;
 }
 
-interface CodeComparisonProps {
-  children: React.ReactNode;
-}
-
-export default function CodeComparison({ children }: CodeComparisonProps) {
+export default function CodeComparison({ children }: { children: React.ReactNode }) {
   const items = Children.toArray(children).filter(
     (child): child is React.ReactElement<ComparisonProps> =>
       React.isValidElement(child) && child.type === Comparison
   );
 
+  const [expanded, setExpanded] = useState(false);
   const hasBody = items.some(item => item.props.children);
   const hasResult = items.some(item => item.props.result);
-  const count = items.length;
-  const [expanded, setExpanded] = useState(false);
+  const rowCount = 2 + (hasBody ? 1 : 0) + (hasResult ? 1 : 0);
 
   return (
     <div
       className={styles.grid}
-      style={{ gridTemplateColumns: `repeat(${count}, 1fr)` }}
+      style={{
+        gridTemplateColumns: `repeat(${items.length}, 1fr)`,
+        gridTemplateRows: `repeat(${rowCount}, auto)`,
+      }}
     >
-      {/* Title row */}
       {items.map((item, i) => (
-        <div key={`title-${i}`} className={styles.title}>
-          {item.props.title}
-        </div>
-      ))}
+        <div key={i} className={styles.column}>
+          <div className={styles.title}>{item.props.title}</div>
 
-      {/* Body row */}
-      {hasBody && items.map((item, i) => (
-        <div key={`body-${i}`} className={styles.body}>
-          <MDXContent>{item.props.children}</MDXContent>
-        </div>
-      ))}
+          {hasBody && (
+            <div className={styles.body}>
+              {item.props.children && (
+                <MDXContent>{item.props.children}</MDXContent>
+              )}
+            </div>
+          )}
 
-      {/* Code row */}
-      {items.map((item, i) => (
-        <div key={`code-${i}`} className={styles.code}>
-          <CodeBlock language={item.props.lang}>{item.props.code}</CodeBlock>
-        </div>
-      ))}
+          <div className={styles.code}>
+            <CodeBlock language={item.props.lang}>{item.props.code}</CodeBlock>
+          </div>
 
-      {/* Result row */}
-      {hasResult && items.map((item, i) => (
-        <div key={`result-${i}`} className={styles.result}>
-          {item.props.result && (
-            <>
-              <span className={styles.resultLabel}>Result</span>
-              <div className={`${styles.resultBody} ${expanded ? styles.expanded : ''}`}>
-                <CodeBlock language="json">{item.props.result}</CodeBlock>
-                {!expanded && <div className={styles.fade} />}
-              </div>
-              <button className={styles.expandBtn} onClick={() => setExpanded(prev => !prev)}>
-                {expanded ? '↑ Show less' : '↓ Show more'}
-              </button>
-            </>
+          {hasResult && (
+            <div className={styles.result}>
+              {item.props.result && (
+                <>
+                  <span className={styles.resultLabel}>Result</span>
+                  <div className={`${styles.resultBody} ${expanded ? styles.expanded : ''}`}>
+                    <CodeBlock language="json">{item.props.result}</CodeBlock>
+                    {!expanded && <div className={styles.fade} />}
+                  </div>
+                  <button className={styles.expandBtn} onClick={() => setExpanded(p => !p)}>
+                    {expanded ? '↑ Show less' : '↓ Show more'}
+                  </button>
+                </>
+              )}
+            </div>
           )}
         </div>
       ))}
