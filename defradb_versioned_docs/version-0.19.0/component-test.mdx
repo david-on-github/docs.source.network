@@ -3,16 +3,8 @@ title: Component Test
 sidebar_label: Component Test
 ---
 
-import CodeComparison from "@site/src/components/CodeComparison";
+import CodeComparison, { Comparison } from "@site/src/components/CodeComparison";
 import BasicBody from "./component_imports/_comparison-basic.md";
-import FilterBody from "./component_imports/_comparison-filter.md";
-
-export const GroupByBody = () => (
-  <>
-    Group results by <code>genre</code> and count entries per group using{" "}
-    <code>_count</code>. Any field can be used in <code>groupBy</code>.
-  </>
-);
 
 export const basicCode = `{
   Books {
@@ -94,33 +86,19 @@ export const groupByResult = `{
   }
 }`;
 
-<CodeComparison
-  comparisons={[
-    {
-      title: "Basic query",
-      body: BasicBody,
-      code: basicCode,
-      lang: "graphql",
-      result: basicResult,
-    },
-    {
-      title: "With filter",
-      body: FilterBody,
-      code: filterCode,
-      lang: "graphql",
-      result: filterResult,
-    },
-  ]}
-/>
+<CodeComparison>
+  <Comparison title="Basic query" lang="graphql" code={basicCode} result={basicResult}>
+    <BasicBody />
+  </Comparison>
+  <Comparison title="With filter" lang="graphql" code={filterCode} result={filterResult}>
+    Filter books by a minimum rating using the `_ge` operator. See [filtering docs](/defradb/references/query-specification/filtering) for all available operators.
+  </Comparison>
+</CodeComparison>
 
-<CodeComparison
-  comparisons={[
-    {
-      title: "With groupBy",
-      body: GroupByBody,
-      code: groupByCode,
-      lang: "graphql",
-      result: groupByResult,
-    },
-  ]}
-/>
+<CodeComparison>
+  <Comparison title="With groupBy" lang="graphql" code={groupByCode} result={groupByResult}>
+    ## test header
+    ---
+    Group results by `genre` and count entries per group using `_count`. Any field can be used in `groupBy`.
+  </Comparison>
+</CodeComparison>
