@@ -1,0 +1,112 @@
+.grid {
+  display: grid;
+  // gridTemplateColumns set inline via style prop
+  border: 1px solid var(--ifm-color-emphasis-300);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+
+.title,
+.body,
+.code,
+.result {
+  padding: 1rem 1.25rem;
+  min-width: 0; // prevent grid blowout from wide code blocks
+}
+
+// Column dividers — every non-first sibling of the same row type
+.title ~ .title,
+.body ~ .body,
+.code ~ .code,
+.result ~ .result {
+  border-left: 1px solid var(--ifm-color-emphasis-300);
+}
+
+// Row dividers — use border-top on every row after the first
+.body,
+.code,
+.result {
+  border-top: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: var(--ifm-color-emphasis-100);
+}
+
+.body {
+  font-size: 0.9rem;
+  color: var(--ifm-color-emphasis-800);
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.code {
+  > div {
+    margin-bottom: 0 !important;
+  }
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+}
+
+.resultLabel {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ifm-color-emphasis-500);
+  margin-bottom: 0.4rem;
+}
+
+.resultBody {
+  position: relative;
+  flex: 1;
+  max-height: 8rem;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+
+  > div {
+    margin-bottom: 0 !important;
+  }
+
+  &.expanded {
+    max-height: 9999px;
+  }
+}
+
+.fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4rem;
+  background: linear-gradient(to bottom, transparent, var(--ifm-background-color));
+  pointer-events: none;
+}
+
+.expandBtn {
+  display: block;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  padding: 0.3rem 0;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--ifm-color-emphasis-200);
+  font-size: 0.8rem;
+  color: var(--ifm-color-primary);
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    color: var(--ifm-color-primary-dark);
+  }
+}

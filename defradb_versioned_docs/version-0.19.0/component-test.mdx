@@ -1,0 +1,126 @@
+---
+title: Component Test
+sidebar_label: Component Test
+---
+
+import CodeComparison from "@site/src/components/CodeComparison";
+import BasicBody from "./component_imports/_comparison-basic.md";
+import FilterBody from "./component_imports/_comparison-filter.md";
+
+export const GroupByBody = () => (
+  <>
+    Group results by <code>genre</code> and count entries per group using{" "}
+    <code>_count</code>. Any field can be used in <code>groupBy</code>.
+  </>
+);
+
+export const basicCode = `{
+  Books {
+    title
+    rating
+    author {
+      name
+    }
+  }
+}`;
+
+export const basicResult = `{
+  "data": {
+    "Books": [
+      { "title": "Dune", "rating": 4.9, "author": { "name": "Frank Herbert" } },
+      { "title": "Foundation", "rating": 4.7, "author": { "name": "Isaac Asimov" } },
+      { "title": "Neuromancer", "rating": 4.5, "author": { "name": "William Gibson" } },
+      { "title": "Snow Crash", "rating": 4.6, "author": { "name": "Neal Stephenson" } },
+      { "title": "The Left Hand of Darkness", "rating": 4.4, "author": { "name": "Ursula K. Le Guin" } },
+      { "title": "Hyperion", "rating": 4.8, "author": { "name": "Dan Simmons" } }
+    ]
+  }
+}`;
+
+export const filterCode = `{
+  Books(filter: { rating: { _ge: 4.6 } }) {
+    title
+    rating
+    author {
+      name
+    }
+  }
+}`;
+
+export const filterResult = `{
+  "data": {
+    "Books": [
+      { "title": "Dune", "rating": 4.9, "author": { "name": "Frank Herbert" } },
+      { "title": "Foundation", "rating": 4.7, "author": { "name": "Isaac Asimov" } },
+      { "title": "Snow Crash", "rating": 4.6, "author": { "name": "Neal Stephenson" } },
+      { "title": "Hyperion", "rating": 4.8, "author": { "name": "Dan Simmons" } }
+    ]
+  }
+}`;
+
+export const groupByCode = `{
+  Books(groupBy: [genre]) {
+    genre
+    _count
+    _group {
+      title
+      rating
+    }
+  }
+}`;
+
+export const groupByResult = `{
+  "data": {
+    "Books": [
+      {
+        "genre": "sci-fi",
+        "_count": 4,
+        "_group": [
+          { "title": "Dune", "rating": 4.9 },
+          { "title": "Neuromancer", "rating": 4.5 },
+          { "title": "Snow Crash", "rating": 4.6 },
+          { "title": "Hyperion", "rating": 4.8 }
+        ]
+      },
+      {
+        "genre": "fantasy",
+        "_count": 2,
+        "_group": [
+          { "title": "Foundation", "rating": 4.7 },
+          { "title": "The Left Hand of Darkness", "rating": 4.4 }
+        ]
+      }
+    ]
+  }
+}`;
+
+<CodeComparison
+  comparisons={[
+    {
+      title: "Basic query",
+      body: BasicBody,
+      code: basicCode,
+      lang: "graphql",
+      result: basicResult,
+    },
+    {
+      title: "With filter",
+      body: FilterBody,
+      code: filterCode,
+      lang: "graphql",
+      result: filterResult,
+    },
+  ]}
+/>
+
+<CodeComparison
+  comparisons={[
+    {
+      title: "With groupBy",
+      body: GroupByBody,
+      code: groupByCode,
+      lang: "graphql",
+      result: groupByResult,
+    },
+  ]}
+/>
